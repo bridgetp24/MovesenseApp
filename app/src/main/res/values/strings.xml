@@ -76,4 +76,6 @@
     <string name="bpm">Beat interval [bpm]:</string>
     <string name="heart_rate">Heart rate:</string>
     <string name="beat_interval">Beat interval:</string>
+    <string name="pulse_oximeter">Pulse Oximeter</string>
+    <string name="pulseOximeterInstruct">Subscribe to Pulse Oximeter data here. This sensor is not yet implemented.</string>
 </resources>

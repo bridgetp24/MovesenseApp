@@ -37,6 +37,7 @@ import com.test.movesenseapp.section_01_movesense.tests.AppInfoActivity;
 import com.test.movesenseapp.section_01_movesense.tests.BatteryActivity;
 import com.test.movesenseapp.section_01_movesense.tests.EcgActivityGraphView;
 import com.test.movesenseapp.section_01_movesense.tests.LinearAccelerationTestActivity;
+import com.test.movesenseapp.section_01_movesense.tests.PulseOximeterActivity;
 import com.test.movesenseapp.utils.ThrowableToastingAction;
 
 import java.util.ArrayList;
@@ -73,13 +74,14 @@ public class SensorListActivity extends BaseActivity implements View.OnClickList
 
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.app_info_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.linear_acceleration_name)));
-      //  sensorListItemModels.add(new SensorListItemModel(getString(R.string.led_name)));
+
       //  sensorListItemModels.add(new SensorListItemModel(getString(R.string.temperature_name)));
       //  sensorListItemModels.add(new SensorListItemModel(getString(R.string.heart_rate_name)));
        // sensorListItemModels.add(new SensorListItemModel(getString(R.string.angular_velocity_name)));
         //sensorListItemModels.add(new SensorListItemModel(getString(R.string.magnetic_field_name)));
         //sensorListItemModels.add(new SensorListItemModel(getString(R.string.multi_subscription_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.ecg)));
+        sensorListItemModels.add(new SensorListItemModel(getString(R.string.pulse_oximeter)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.battery_energy)));
        // sensorListItemModels.add(new SensorListItemModel(getString(R.string.imu_name)));
        // sensorListItemModels.add(new SensorListItemModel(getString(R.string.Memory_Diagnostic)));
@@ -152,8 +154,8 @@ public class SensorListActivity extends BaseActivity implements View.OnClickList
 
         subscriptions.clear();
 
-        if (getString(R.string.led_name).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, LedTestActivity.class));
+        if (getString(R.string.pulse_oximeter).equals(sensorName)) {
+            startActivity(new Intent(SensorListActivity.this, PulseOximeterActivity.class));
             return;
         } else if (getString(R.string.linear_acceleration_name).equals(sensorName)) {
            startActivity(new Intent(SensorListActivity.this, LinearAccelerationTestActivity.class));
