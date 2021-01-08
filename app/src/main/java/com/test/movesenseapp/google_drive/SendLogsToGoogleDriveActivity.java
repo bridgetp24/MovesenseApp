@@ -196,10 +196,14 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
     protected void onResume() {
         super.onResume();
 
-        // connectGoogleApiClient();
+        //commented for some reason? uncommented now
+        //makes it so you have to sign in from the start
+       // connectGoogleApiClient();
     }
 
     private void connectGoogleApiClient() {
+        Log.d(LOG_TAG, "running connectGoogleApiClient");
+
         if (mGoogleApiClient == null) {
             // Create the API client and bind it to an instance variable.
             // We use this instance as the callback for connection and connection
@@ -265,6 +269,7 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
 
                 // Log in
                 if (mGoogleApiClient == null) {
+
                     //mGoogleApiClient.connect();
                     connectGoogleApiClient();
                     invalidateOptionsMenu();
@@ -516,6 +521,8 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
                 sendFileToGoogleDrive();
             } catch (Exception e) {
                 Log.d(LOG_TAG, "catching exception");
+                e.printStackTrace();
+                System.out.println(e);
                 mLastError = e;
                 cancel(true);
             }
@@ -528,13 +535,15 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
             ///////////////  Send File to Drive
 
             Log.d(LOG_TAG,"query for google drive fileList");
-            // Query for folder from Google Drive
+            // Query for folder from Google Drive and limit to untrashed folders
             com.google.api.services.drive.Drive.Files.List filesonDrive = mService.files().
                     list().setQ(
                     "mimeType='application/vnd.google-apps.folder' and trashed=false");
             // Execute query
             Log.d(LOG_TAG,"execute query");
+
             FileList fileList = filesonDrive.execute();
+           //ileList fileList =mService.files().list().setQ("mimeType='application/vnd.google-apps.folder' and trashed=false").execute();
             Log.d(LOG_TAG,"query complete, now search for parent folder");
 
             for (com.google.api.services.drive.model.File file : fileList.getFiles()) {
@@ -621,7 +630,7 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
                 } else {
                     Log.d(LOG_TAG, "Other Error occured");
                     Toast.makeText(com.test.movesenseapp.google_drive.SendLogsToGoogleDriveActivity.this, "The following error occurred:\n"
-                            + mLastError.getMessage(), Toast.LENGTH_SHORT).show();
+                            + mLastError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             } else {
                 Log.d(LOG_TAG, "mLastError null");
