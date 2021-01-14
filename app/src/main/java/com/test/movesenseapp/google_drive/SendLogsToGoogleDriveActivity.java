@@ -290,6 +290,7 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
             Log.d(LOG_TAG, "acquireGooglePlayServices()");
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
+            //this is our issue, name is still getting set to null
             chooseAccount();
         } else if (!isDeviceOnline()) {
             Toast.makeText(this, R.string.no_network_connection_available, Toast.LENGTH_SHORT).show();
@@ -309,6 +310,7 @@ public class SendLogsToGoogleDriveActivity extends AppCompatActivity implements 
 
             if (accountName != null) {
                 Log.d(LOG_TAG, "account not null, setting account name");
+                Log.d(LOG_TAG, accountName + " is the account name being set as selected");
                 mCredential.setSelectedAccountName(accountName);
                 getResultsFromApi();
             } else {

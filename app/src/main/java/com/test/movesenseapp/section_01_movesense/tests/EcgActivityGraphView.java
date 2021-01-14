@@ -345,6 +345,7 @@ public class EcgActivityGraphView extends BaseActivity implements BleManager.IBl
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //TODO: What is this
 //        if (requestCode == LogsManager.REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION) {
 //            // if request is cancelled grantResults array is empty
 //            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

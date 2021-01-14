@@ -37,6 +37,7 @@ import com.test.movesenseapp.section_01_movesense.tests.AppInfoActivity;
 import com.test.movesenseapp.section_01_movesense.tests.BatteryActivity;
 import com.test.movesenseapp.section_01_movesense.tests.EcgActivityGraphView;
 import com.test.movesenseapp.section_01_movesense.tests.LinearAccelerationTestActivity;
+import com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity;
 import com.test.movesenseapp.section_01_movesense.tests.PulseOximeterActivity;
 import com.test.movesenseapp.utils.ThrowableToastingAction;
 
@@ -73,18 +74,12 @@ public class SensorListActivity extends BaseActivity implements View.OnClickList
         ArrayList<SensorListItemModel> sensorListItemModels = new ArrayList<>();
 
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.app_info_name)));
+        sensorListItemModels.add(new SensorListItemModel(getString(R.string.multi_subscription_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.linear_acceleration_name)));
-
-      //  sensorListItemModels.add(new SensorListItemModel(getString(R.string.temperature_name)));
-      //  sensorListItemModels.add(new SensorListItemModel(getString(R.string.heart_rate_name)));
-       // sensorListItemModels.add(new SensorListItemModel(getString(R.string.angular_velocity_name)));
-        //sensorListItemModels.add(new SensorListItemModel(getString(R.string.magnetic_field_name)));
-        //sensorListItemModels.add(new SensorListItemModel(getString(R.string.multi_subscription_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.ecg)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.pulse_oximeter)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.battery_energy)));
-       // sensorListItemModels.add(new SensorListItemModel(getString(R.string.imu_name)));
-       // sensorListItemModels.add(new SensorListItemModel(getString(R.string.Memory_Diagnostic)));
+
 
         SensorsListAdapter sensorsListAdapter = new SensorsListAdapter(sensorListItemModels, this);
         mSensorListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -173,7 +168,7 @@ public class SensorListActivity extends BaseActivity implements View.OnClickList
            // startActivity(new Intent(SensorListActivity.this, HeartRateTestActivity.class));
             return;
         } else if (getString(R.string.multi_subscription_name).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, MultiSubscribeActivity.class));
+            startActivity(new Intent(SensorListActivity.this, MultiSubscribeActivity.class));
             return;
         } else if (getString(R.string.ecg).equals(sensorName)) {
           //  startActivity(new Intent(SensorListActivity.this, EcgActivity.class));

@@ -89,6 +89,10 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".section_01_movesense.tests.MultiSubscribeActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
 
         <activity android:name=".BaseActivity">
@@ -106,6 +110,14 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:name=".section_02_multi_connection.sensor_usage.MultiSensorUsageActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".section_02_multi_connection.connection.MultiConnectionActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

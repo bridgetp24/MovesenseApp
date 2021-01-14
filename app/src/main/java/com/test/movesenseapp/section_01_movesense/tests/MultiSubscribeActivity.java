@@ -1,9 +1,11 @@
 package com.test.movesenseapp.section_01_movesense.tests;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -22,6 +24,7 @@ import com.test.movesenseapp.csv.CsvLogger;
 import com.test.movesenseapp.model.AngularVelocity;
 import com.test.movesenseapp.model.LinearAcceleration;
 import com.test.movesenseapp.model.MagneticField;
+import com.test.movesenseapp.section_01_movesense.MovesenseActivity;
 import com.test.movesenseapp.utils.FormatHelper;
 
 import java.util.Locale;
@@ -37,16 +40,16 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
     @BindView(R.id.x_axis_linearAcc_textView) TextView xAxisLinearAccTextView;
     @BindView(R.id.y_axis_linearAcc_textView) TextView yAxisLinearAccTextView;
     @BindView(R.id.z_axis_linearAcc_textView) TextView zAxisLinearAccTextView;
-    @BindView(R.id.switchSubscriptionMagneticField)
+    @BindView(R.id.switchSubscriptionECG)
     SwitchCompat switchSubscriptionMagneticField;
     @BindView(R.id.x_axis_magneticField_textView) TextView xAxisMagneticFieldTextView;
     @BindView(R.id.y_axis_magneticField_textView) TextView yAxisMagneticFieldTextView;
-    @BindView(R.id.z_axis_magneticField_textView) TextView zAxisMagneticFieldTextView;
-    @BindView(R.id.switchSubscriptionAngularVelocity)
+    @BindView(R.id.heart_rate_textView) TextView zAxisMagneticFieldTextView;
+    @BindView(R.id.switchSubscriptionPulseOximeter)
     SwitchCompat switchSubscriptionAngularVelocity;
     @BindView(R.id.x_axis_angularVelocity_textView) TextView xAxisAngularVelocityTextView;
     @BindView(R.id.y_axis_angularVelocity_textView) TextView yAxisAngularVelocityTextView;
-    @BindView(R.id.z_axis_angularVelocity_textView) TextView zAxisAngularVelocityTextView;
+   // @BindView(R.id.z_axis_angularVelocity_textView) TextView zAxisAngularVelocityTextView;
 
     private final String LOG_TAG = com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity.class.getSimpleName();
     private final String LINEAR_ACCELERATION_PATH = "Meas/Acc/";
@@ -73,12 +76,18 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
             getSupportActionBar().setTitle("Multi Subscribe");
         }
 
-        mConnectedDeviceNameTextView.setText("Serial: " + MovesenseConnectedDevices.getConnectedDevice(0)
-                .getSerial());
 
-        mConnectedDeviceSwVersionTextView.setText("Sw version: " + MovesenseConnectedDevices.getConnectedDevice(0)
-                .getSwVersion());
 
+        try {
+            mConnectedDeviceNameTextView.setText("Serial: " + MovesenseConnectedDevices.getConnectedDevice(0)
+                    .getSerial());
+
+            mConnectedDeviceSwVersionTextView.setText("Sw version: " + MovesenseConnectedDevices.getConnectedDevice(0)
+                    .getSwVersion());
+        }catch(IndexOutOfBoundsException E) {
+            Toast.makeText(com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity.this, "Please Connect a device first to use multi-connect",Toast.LENGTH_LONG).show();
+            startActivity(new Intent(com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity.this, MovesenseActivity.class));
+        }
         BleManager.INSTANCE.addBleConnectionMonitorListener(this);
 
         mCsvLogger.checkRuntimeWriteExternalStoragePermission(this, this);
@@ -157,7 +166,7 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
     }
 
 
-    @OnCheckedChanged(R.id.switchSubscriptionMagneticField)
+    @OnCheckedChanged(R.id.switchSubscriptionECG)
     public void onCheckedChangedMagnetic(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             Log.d(LOG_TAG, "+++ Subscribe MagneticField");
@@ -201,7 +210,7 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
         }
     }
 
-    @OnCheckedChanged(R.id.switchSubscriptionAngularVelocity)
+    @OnCheckedChanged(R.id.switchSubscriptionPulseOximeter)
     public void onCheckedChangedAngularVielocity(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             Log.d(LOG_TAG, "+++ Subscribe AngularVelocity");
@@ -228,8 +237,8 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
                                         "x: %.6f", arrayData.x));
                                 yAxisAngularVelocityTextView.setText(String.format(Locale.getDefault(),
                                         "y: %.6f", arrayData.y));
-                                zAxisAngularVelocityTextView.setText(String.format(Locale.getDefault(),
-                                        "z: %.6f", arrayData.z));
+//                                zAxisAngularVelocityTextView.setText(String.format(Locale.getDefault(),
+//                                        "z: %.6f", arrayData.z));
 
                             }
                         }

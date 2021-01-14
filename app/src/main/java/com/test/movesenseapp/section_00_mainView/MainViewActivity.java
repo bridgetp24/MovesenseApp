@@ -14,6 +14,8 @@ import com.test.movesenseapp.BuildConfig;
 import com.test.movesenseapp.R;
 import com.test.movesenseapp.section_01_movesense.MovesenseActivity;
 import com.test.movesenseapp.google_drive.SendLogsToGoogleDriveActivity;
+import com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity;
+import com.test.movesenseapp.section_02_multi_connection.connection.MultiConnectionActivity;
 //import com.test.showcaserebuild.section_02_multi_connection.connection.MultiConnectionActivity;
 
 
@@ -61,7 +63,7 @@ public class MainViewActivity extends AppCompatActivity {
                 break;
             case R.id.mainView_multiConnection_Ll:
                 Log.d(TAG, "Starting multi connection intent");
-                //startActivity(new Intent(com.test.showcaserebuild.com.test.movesenseapp.section_00_mainView.MainViewActivity.this, MultiConnectionActivity.class));
+                startActivity(new Intent(com.test.movesenseapp.section_00_mainView.MainViewActivity.this, MultiConnectionActivity.class));
                 break;
 
             case R.id.mainView_savedData_Ll:

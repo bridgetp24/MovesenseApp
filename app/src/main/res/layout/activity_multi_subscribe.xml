@@ -93,7 +93,7 @@
 
         </LinearLayout>
 
-        <!--Magnetic Field-->
+        <!--ECG-->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -104,16 +104,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="MagneticField"/>
+                android:text="ECG"/>
 
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchSubscriptionMagneticField"
+                android:id="@+id/switchSubscriptionECG"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
                 android:text="@string/off_on"/>
-
+            <TextView
+                android:id="@+id/heart_rate_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/heart_rate"
+                android:textSize="16sp"/>
             <TextView
                 android:id="@+id/x_axis_magneticField_textView"
                 android:layout_width="match_parent"
@@ -130,17 +136,11 @@
                 android:text="@string/y"
                 android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/z_axis_magneticField_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/z"
-                android:textSize="16sp"/>
+
 
         </LinearLayout>
 
-        <!--Angular Velocity-->
+        <!--Pulse Oximeter-->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -151,10 +151,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="AngularVelocity"/>
+                android:text="Pulse Oximeter"/>
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchSubscriptionAngularVelocity"
+                android:id="@+id/switchSubscriptionPulseOximeter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
@@ -176,13 +176,7 @@
                 android:text="@string/y"
                 android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/z_axis_angularVelocity_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/z"
-                android:textSize="16sp"/>
+
 
         </LinearLayout>
 
