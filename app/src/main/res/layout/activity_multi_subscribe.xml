@@ -118,23 +118,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/heart_rate"
-                android:textSize="16sp"/>
-            <TextView
-                android:id="@+id/x_axis_magneticField_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/x"
+                android:text="Heart Rate:"
                 android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/y_axis_magneticField_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/y"
-                android:textSize="16sp"/>
+
 
 
 

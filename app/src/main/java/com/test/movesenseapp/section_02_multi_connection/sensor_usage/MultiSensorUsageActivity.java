@@ -24,6 +24,7 @@ import com.test.movesenseapp.BaseActivity;
 import com.test.movesenseapp.R;
 import com.test.movesenseapp.bluetooth.MdsRx;
 import com.test.movesenseapp.model.AngularVelocity;
+import com.test.movesenseapp.model.HeartRate;
 import com.test.movesenseapp.model.LinearAcceleration;
 import com.test.movesenseapp.model.MagneticField;
 import com.test.movesenseapp.model.MdsConnectedDevice;
@@ -61,7 +62,9 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
     @BindView(R.id.multiSensorUsage_angularVelocity_textView) TextView mMultiSensorUsageAngularVelocityTextView;
     @BindView(R.id.multiSensorUsage_angularVelocity_switch)
     SwitchCompat mMultiSensorUsageAngularVelocitySwitch;
-    @BindView(R.id.multiSensorUsage_angularVelocity_device1_x_tv) TextView mMultiSensorUsageAngularVelocityDevice1XTv;
+
+    //switch AV to ECG
+    @BindView(R.id.multiSensorUsage_angularVelocity_device1_x_tv) TextView mMultiSensorUsageHeartRateDevice1;
     @BindView(R.id.multiSensorUsage_angularVelocity_device1_y_tv) TextView mMultiSensorUsageAngularVelocityDevice1YTv;
     @BindView(R.id.multiSensorUsage_angularVelocity_device1_z_tv) TextView mMultiSensorUsageAngularVelocityDevice1ZTv;
     @BindView(R.id.multiSensorUsage_angularVelocity_device2_x_tv) TextView mMultiSensorUsageAngularVelocityDevice2XTv;
@@ -88,12 +91,18 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
     private MultiSensorUsagePresenter mPresenter;
     private CompositeDisposable mCompositeSubscription;
 
-    private final String TAG = MultiSensorUsageActivity.class.getSimpleName();
+    private final String TAG = "MultiSensorDebug";
 
     private final String LINEAR_ACC_PATH = "Meas/Acc/26";
     private final String ANGULAR_VELOCITY_PATH = "Meas/Gyro/26";
     private final String MAGNETIC_FIELD_PATH = "Meas/Magn/26";
     private final String TEMPERATURE_PATH = "Meas/Temp";
+    private final String ECG_VELOCITY_PATH = "Meas/ECG/";
+    private final String HEART_RATE_PATH = "Meas/Hr";
+
+    private MdsSubscription mdsSubscriptionHr;
+    private MdsSubscription mdsSubscriptionEcg;
+
     private MdsSubscription mMdsLinearAccSubscription1;
     private MdsSubscription mMdsLinearAccSubscription2;
     private MdsSubscription mMdsAngularVelocitySubscription1;
@@ -218,7 +227,7 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
 
 
     /**
-     * Angular Velocity Switch
+     * Angular Velocity Switch -- switch to ECG
      *
      * @param buttonView
      * @param isChecked
@@ -228,20 +237,24 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
         if (isChecked) {
             Log.d(TAG, "=== Angular Velocity Subscribe ===");
 
+            //change name
+
             mMdsAngularVelocitySubscription1 = Mds.builder().build(this).subscribe("suunto://MDS/EventListener",
                     FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(0)
-                            .getSerial(), ANGULAR_VELOCITY_PATH), new MdsNotificationListener() {
+                            .getSerial(), HEART_RATE_PATH), new MdsNotificationListener() {
                         @Override
                         public void onNotification(String s) {
-                            AngularVelocity angularVelocity = new Gson().fromJson(
-                                    s, AngularVelocity.class);
+                            HeartRate heartRate = new Gson().fromJson(
+                                    s, HeartRate.class);
 
-                            if (angularVelocity != null) {
+                            AngularVelocity angularVelocity = new Gson().fromJson(s, AngularVelocity.class);
+
+                            if (heartRate != null) {
 
                                 AngularVelocity.Array arrayData = angularVelocity.body.array[0];
 
-                                mMultiSensorUsageAngularVelocityDevice1XTv.setText(String.format(Locale.getDefault(),
-                                        "x: %.6f", arrayData.x));
+                                mMultiSensorUsageHeartRateDevice1.setText(String.format(Locale.getDefault(),
+                                        "Heart rate: %.0f [bpm]",(60.0 / heartRate.body.rrData[0]) * 1000));
                                 mMultiSensorUsageAngularVelocityDevice1YTv.setText(String.format(Locale.getDefault(),
                                         "y: %.6f", arrayData.y));
                                 mMultiSensorUsageAngularVelocityDevice1ZTv.setText(String.format(Locale.getDefault(),
@@ -293,7 +306,7 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
 
 
     /**
-     * Magnetic Field Switch
+     * Magnetic Field Switch -- switch to pulse oximeter
      *
      * @param buttonView
      * @param isChecked
@@ -366,7 +379,7 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
     }
 
     /**
-     * Temperature Switch
+     * Temperature Switch -- cut
      *
      * @param buttonView
      * @param isChecked
