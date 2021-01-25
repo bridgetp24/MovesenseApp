@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.gson.Gson;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.movesense.mds.Mds;
 import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsNotificationListener;
@@ -23,13 +25,16 @@ import com.movesense.mds.internal.connectivity.MovesenseConnectedDevices;
 import com.test.movesenseapp.BaseActivity;
 import com.test.movesenseapp.R;
 import com.test.movesenseapp.bluetooth.MdsRx;
+import com.test.movesenseapp.csv.CsvLogger;
 import com.test.movesenseapp.model.AngularVelocity;
+import com.test.movesenseapp.model.EcgModel;
 import com.test.movesenseapp.model.HeartRate;
 import com.test.movesenseapp.model.LinearAcceleration;
 import com.test.movesenseapp.model.MagneticField;
 import com.test.movesenseapp.model.MdsConnectedDevice;
 
 import com.test.movesenseapp.section_00_mainView.MainViewActivity;
+import com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity;
 import com.test.movesenseapp.utils.FormatHelper;
 import com.test.movesenseapp.utils.ThrowableToastingAction;
 
@@ -59,18 +64,21 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
     @BindView(R.id.multiSensorUsage_linearAcc_device2_y_tv) TextView mMultiSensorUsageLinearAccDevice2YTv;
     @BindView(R.id.multiSensorUsage_linearAcc_device2_z_tv) TextView mMultiSensorUsageLinearAccDevice2ZTv;
     @BindView(R.id.multiSensorUsage_linearAcc_containerLl) LinearLayout mMultiSensorUsageLinearAccContainerLl;
+
+
     @BindView(R.id.multiSensorUsage_angularVelocity_textView) TextView mMultiSensorUsageAngularVelocityTextView;
     @BindView(R.id.multiSensorUsage_angularVelocity_switch)
     SwitchCompat mMultiSensorUsageAngularVelocitySwitch;
+    public static final String URI_EVENTLISTENER = "suunto://MDS/EventListener";
 
     //switch AV to ECG
     @BindView(R.id.multiSensorUsage_angularVelocity_device1_x_tv) TextView mMultiSensorUsageHeartRateDevice1;
-    @BindView(R.id.multiSensorUsage_angularVelocity_device1_y_tv) TextView mMultiSensorUsageAngularVelocityDevice1YTv;
-    @BindView(R.id.multiSensorUsage_angularVelocity_device1_z_tv) TextView mMultiSensorUsageAngularVelocityDevice1ZTv;
-    @BindView(R.id.multiSensorUsage_angularVelocity_device2_x_tv) TextView mMultiSensorUsageAngularVelocityDevice2XTv;
-    @BindView(R.id.multiSensorUsage_angularVelocity_device2_y_tv) TextView mMultiSensorUsageAngularVelocityDevice2YTv;
-    @BindView(R.id.multiSensorUsage_angularVelocity_device2_z_tv) TextView mMultiSensorUsageAngularVelocityDevice2ZTv;
+    @BindView(R.id.multiSensorUsage_angularVelocity_device2_x_tv) TextView mMultiSensorUsageHeartRateDevice2;
+
     @BindView(R.id.multiSensorUsage_angularVelocity_containerLl) LinearLayout mMultiSensorUsageAngularVelocityContainerLl;
+
+
+
     @BindView(R.id.multiSensorUsage_magneticField_textView) TextView mMultiSensorUsageMagneticFieldTextView;
     @BindView(R.id.multiSensorUsage_magneticField_switch)
     SwitchCompat mMultiSensorUsageMagneticFieldSwitch;
@@ -93,6 +101,12 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
 
     private final String TAG = "MultiSensorDebug";
 
+    //ECG
+    private final int MS_IN_SECOND = 1000;
+    private LineGraphSeries<DataPoint> mSeriesECG;
+    private int mDataPointsAppended;
+    final int ecgSampleRate = 128;
+
     private final String LINEAR_ACC_PATH = "Meas/Acc/26";
     private final String ANGULAR_VELOCITY_PATH = "Meas/Gyro/26";
     private final String MAGNETIC_FIELD_PATH = "Meas/Magn/26";
@@ -100,9 +114,14 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
     private final String ECG_VELOCITY_PATH = "Meas/ECG/";
     private final String HEART_RATE_PATH = "Meas/Hr";
 
-    private MdsSubscription mdsSubscriptionHr;
-    private MdsSubscription mdsSubscriptionEcg;
 
+
+    private CsvLogger mCsvLogger;
+
+    private MdsSubscription mdsSubscriptionHr1;
+    private MdsSubscription mdsSubscriptionHr2;
+    private MdsSubscription mdsSubscriptionEcg1;
+    private MdsSubscription mdsSubscriptionEcg2;
     private MdsSubscription mMdsLinearAccSubscription1;
     private MdsSubscription mMdsLinearAccSubscription2;
     private MdsSubscription mMdsAngularVelocitySubscription1;
@@ -147,6 +166,10 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
                         }
                     }
                 }, new ThrowableToastingAction(this)));
+
+        mCsvLogger = new CsvLogger();
+        mSeriesECG = new LineGraphSeries<DataPoint>();
+
     }
 
     /**
@@ -160,7 +183,7 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
         if (isChecked) {
             Log.d(TAG, "=== Linear Acceleration Subscribe ===");
 
-            mMdsLinearAccSubscription1 = Mds.builder().build(this).subscribe("suunto://MDS/EventListener",
+            mMdsLinearAccSubscription1 = Mds.builder().build(this).subscribe(Mds.URI_EVENTLISTENER,
                     FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(0)
                             .getSerial(), LINEAR_ACC_PATH), new MdsNotificationListener() {
                         @Override
@@ -189,7 +212,7 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
                     });
 
 
-            mMdsLinearAccSubscription2 = Mds.builder().build(this).subscribe("suunto://MDS/EventListener",
+            mMdsLinearAccSubscription2 = Mds.builder().build(this).subscribe(URI_EVENTLISTENER,
                     FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(1)
                             .getSerial(), LINEAR_ACC_PATH), new MdsNotificationListener() {
                         @Override
@@ -220,6 +243,7 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
         } else {
             mMdsLinearAccSubscription1.unsubscribe();
             mMdsLinearAccSubscription2.unsubscribe();
+
             Log.d(TAG, "=== Linear Acceleration Unubscribe ===");
         }
 
@@ -227,81 +251,156 @@ public class MultiSensorUsageActivity extends BaseActivity implements MultiSenso
 
 
     /**
-     * Angular Velocity Switch -- switch to ECG
+     * Heart Rate and ECG
+     * The heart rate is displayed in the UI in order to show that the sensor is running. ECG is logged is the CSVLogger.
      *
      * @param buttonView
      * @param isChecked
      */
+
     @OnCheckedChanged(R.id.multiSensorUsage_angularVelocity_switch)
     public void onAngularVelocityCheckedChange(final CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            Log.d(TAG, "=== Angular Velocity Subscribe ===");
+            Log.d(TAG, "=== ECG Subscribe ===");
 
-            //change name
+            updateHeartRate(buttonView, mdsSubscriptionHr1, mMultiSensorUsageHeartRateDevice1);
+            updateHeartRate(buttonView, mdsSubscriptionHr2, mMultiSensorUsageHeartRateDevice2);
+            updateECG(buttonView, mdsSubscriptionEcg1);
+            updateECG(buttonView, mdsSubscriptionEcg2);
 
-            mMdsAngularVelocitySubscription1 = Mds.builder().build(this).subscribe("suunto://MDS/EventListener",
+
+
+        } else {
+            if(mdsSubscriptionHr1 != null) {
+                mdsSubscriptionHr1.unsubscribe();
+            }
+
+            if(mdsSubscriptionHr2 != null) {
+                mdsSubscriptionHr2.unsubscribe();
+            }
+
+            if(mdsSubscriptionEcg1 != null) {
+                mdsSubscriptionEcg1.unsubscribe();
+
+            }
+            if(mdsSubscriptionEcg2 != null) {
+                mdsSubscriptionEcg2.unsubscribe();
+            }
+
+            Log.d(TAG, "=== ECG/Heart Rate Unsubscribe ===");
+        }
+    }
+
+    private void updateHeartRate(CompoundButton buttonView,MdsSubscription mdsSubscriptionHr, TextView mMultiSensorUsageHeartRate) {
+        if(buttonView.isChecked()) {
+            Log.d(TAG, "+++ Subscribe HeartRate");
+
+            mdsSubscriptionHr = Mds.builder().build(this).subscribe(URI_EVENTLISTENER,
                     FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(0)
                             .getSerial(), HEART_RATE_PATH), new MdsNotificationListener() {
-                        @Override
-                        public void onNotification(String s) {
-                            HeartRate heartRate = new Gson().fromJson(
-                                    s, HeartRate.class);
 
-                            AngularVelocity angularVelocity = new Gson().fromJson(s, AngularVelocity.class);
+                        @Override
+                        public void onNotification(String data) {
+                            Log.d(TAG, "onSuccess(): " + data);
+
+
+                            HeartRate heartRate = new Gson().fromJson(data, HeartRate.class);
 
                             if (heartRate != null) {
 
-                                AngularVelocity.Array arrayData = angularVelocity.body.array[0];
 
-                                mMultiSensorUsageHeartRateDevice1.setText(String.format(Locale.getDefault(),
-                                        "Heart rate: %.0f [bpm]",(60.0 / heartRate.body.rrData[0]) * 1000));
-                                mMultiSensorUsageAngularVelocityDevice1YTv.setText(String.format(Locale.getDefault(),
-                                        "y: %.6f", arrayData.y));
-                                mMultiSensorUsageAngularVelocityDevice1ZTv.setText(String.format(Locale.getDefault(),
-                                        "z: %.6f", arrayData.z));
+                                mCsvLogger.appendHeader("Heart Rate");
+
+                                //update UI
+                                Log.d(TAG, "Print heart rate");
+                                mMultiSensorUsageHeartRate.setText(String.format(Locale.getDefault(),
+                                        "Heart rate: %.0f [bpm]", (60.0 / heartRate.body.rrData[0]) * 1000));
+
+
                             }
                         }
 
                         @Override
-                        public void onError(MdsException e) {
+                        public void onError(MdsException error) {
+                            Log.e(TAG, "onError(): ", error);
+                            Toast.makeText(MultiSensorUsageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                             buttonView.setChecked(false);
-                            Toast.makeText(MultiSensorUsageActivity.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     });
-
-
-            mMdsAngularVelocitySubscription2 = Mds.builder().build(this).subscribe("suunto://MDS/EventListener",
-                    FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(1)
-                            .getSerial(), ANGULAR_VELOCITY_PATH), new MdsNotificationListener() {
-                        @Override
-                        public void onNotification(String s) {
-                            AngularVelocity angularVelocity = new Gson().fromJson(
-                                    s, AngularVelocity.class);
-
-                            if (angularVelocity != null) {
-
-                                AngularVelocity.Array arrayData = angularVelocity.body.array[0];
-
-                                mMultiSensorUsageAngularVelocityDevice2XTv.setText(String.format(Locale.getDefault(),
-                                        "x: %.6f", arrayData.x));
-                                mMultiSensorUsageAngularVelocityDevice2YTv.setText(String.format(Locale.getDefault(),
-                                        "y: %.6f", arrayData.y));
-                                mMultiSensorUsageAngularVelocityDevice2ZTv.setText(String.format(Locale.getDefault(),
-                                        "z: %.6f", arrayData.z));
-                            }
-                        }
-
-                        @Override
-                        public void onError(MdsException e) {
-                            buttonView.setChecked(false);
-                            Toast.makeText(MultiSensorUsageActivity.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        } else {
-            mMdsAngularVelocitySubscription1.unsubscribe();
-            mMdsAngularVelocitySubscription2.unsubscribe();
-            Log.d(TAG, "=== Angular Velocity Unsubscribe ===");
         }
+    }
+
+
+
+    public void updateECG(CompoundButton buttonView, MdsSubscription mdsSubscriptionECG) {
+        Log.d(TAG, "+++ Subscribe ECG");
+
+        mDataPointsAppended = 0;
+        mCsvLogger.checkRuntimeWriteExternalStoragePermission(this, this);
+        int width = 128 * 3;
+
+        mSeriesECG.resetData(new DataPoint[0]);
+
+        String subscribedSampleRate = String.valueOf(ecgSampleRate);
+
+        mdsSubscriptionECG = Mds.builder().build(this).subscribe(URI_EVENTLISTENER,
+                FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(0)
+                        .getSerial(), ECG_VELOCITY_PATH + subscribedSampleRate), new MdsNotificationListener() {
+
+                    @Override
+                    public void onNotification(String data) {
+                        Log.d(TAG, "onSuccess(): " + data);
+
+
+                        final EcgModel ecgModel = new Gson().fromJson(
+                                data, EcgModel.class);
+
+                        final int[] ecgSamples = ecgModel.getBody().getData();
+                        final int sampleCount = ecgSamples.length;
+                        final float sampleInterval = (float) MS_IN_SECOND / ecgSampleRate;
+
+                        if (ecgModel.getBody() != null) {
+
+                            for (int i = 0; i < sampleCount; i++) {
+                                try {
+                                    mCsvLogger.appendHeader("Timestamp,Count");
+
+                                    if (ecgModel.mBody.timestamp != null) {
+                                        mCsvLogger.appendLine(String.format(Locale.getDefault(),
+                                                "%d,%s", ecgModel.mBody.timestamp + Math.round(sampleInterval * i),
+                                                String.valueOf(ecgSamples[i])));
+                                    } else {
+                                        mCsvLogger.appendLine("," + String.valueOf(ecgSamples[i]));
+                                    }
+
+                                    mSeriesECG.appendData(
+                                            new DataPoint(mDataPointsAppended, ecgSamples[i]), false,
+                                            width);
+                                } catch (IllegalArgumentException e) {
+                                    Log.e(TAG, "GraphView error ", e);
+                                }
+                                mDataPointsAppended++;
+
+                                if (mDataPointsAppended == 400) {
+                                    mDataPointsAppended = 0;
+                                    mSeriesECG.resetData(new DataPoint[0]);
+                                }
+
+
+                            }
+
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(MdsException error) {
+                        Log.e(TAG, "onError(): ", error);
+                        Toast.makeText(MultiSensorUsageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        buttonView.setChecked(false);
+                    }
+                });
     }
 
 

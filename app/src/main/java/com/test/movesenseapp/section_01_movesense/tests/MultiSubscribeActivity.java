@@ -151,6 +151,8 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
     public void onCheckedChangedLinear(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             Log.d(LOG_TAG, "+++ Subscribe LinearAcc");
+
+            mCsvLogger.checkRuntimeWriteExternalStoragePermission(this, this);
             mdsSubscriptionLinearAcc = Mds.builder().build(this).subscribe(URI_EVENTLISTENER,
                     FormatHelper.formatContractToJson(MovesenseConnectedDevices.getConnectedDevice(0)
                             .getSerial(), LINEAR_ACCELERATION_PATH + "13"), new MdsNotificationListener() {
@@ -229,7 +231,7 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
         }
     }
 
-    private void updateECG(CompoundButton buttonView) {
+    public void updateECG(CompoundButton buttonView) {
         Log.d(LOG_TAG, "+++ Subscribe ECG");
 
         mDataPointsAppended = 0;

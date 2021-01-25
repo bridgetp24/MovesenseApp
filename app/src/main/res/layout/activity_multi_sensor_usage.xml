@@ -207,7 +207,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:text="Angular Velocity"
+            android:text="ECG"
             android:textColor="@color/colorText"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/multiSensorUsage_linearAcc_containerLl"/>
@@ -247,7 +247,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="x:"
+                    android:text="Heart Rate 1:"
                     android:textColor="@color/colorGreen"/>
 
                 <TextView
@@ -280,7 +280,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="x:"
+                    android:text="Heart Rate 2:"
                     android:textColor="@color/colorText"/>
 
                 <TextView
