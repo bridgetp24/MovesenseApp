@@ -51,7 +51,7 @@ import butterknife.OnItemSelected;
 
 public class LinearAccelerationTestActivity extends BaseActivity implements BleManager.IBleConnectionMonitor {
 
-    private final String LOG_TAG = com.test.movesenseapp.section_01_movesense.tests.LinearAccelerationTestActivity.class.getSimpleName();
+    private final String LOG_TAG = "LinearDebug";
     private final String LINEAR_ACCELERATION_PATH = "Meas/Acc/";
     private final String LINEAR_INFO_PATH = "/Meas/Acc/Info";
     public static final String URI_EVENTLISTENER = "suunto://MDS/EventListener";
@@ -126,6 +126,7 @@ public class LinearAccelerationTestActivity extends BaseActivity implements BleM
 
                         // Hide dialog
                         alertDialog.dismiss();
+                        Log.d(LOG_TAG, data + " is inputed data onSuccess");
 
                         InfoResponse infoResponse = new Gson().fromJson(data, InfoResponse.class);
 

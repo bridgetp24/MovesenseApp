@@ -54,17 +54,35 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
     private final String LINEAR_ACCELERATION_PATH = "Meas/Acc/";
     private final String LINEAR_INFO_PATH = "/Meas/Acc/Info";
     public static final String URI_EVENTLISTENER = "suunto://MDS/EventListener";
-    private final List<String> spinnerRates = new ArrayList<>();
-    private String rate;
-    private MdsSubscription mdsSubscription;
 
+    //Spinner value lists
+    private final List<String> spinnerRates = new ArrayList<>();
+    private final List<String> ranges = new ArrayList<>();
+    private final List<String> LEDModes = new ArrayList<>();
+    private final List<String> pulseWidths = new ArrayList<>();
+    private final List<String> brightnessLevels = new ArrayList<>();
+    private final List<String> avgReadings = new ArrayList<>();
+
+    //selected settings
+    private String rate;
+    private String LEDMode;
+    private String pulseWidth;
+    private String brightness;
+    private String avgCount;
+
+    private MdsSubscription mdsSubscription;
 
     @BindView(R.id.switchSubscription)
     SwitchCompat switchSubscription;
     @BindView(R.id.spinner) Spinner spinner;
+    @BindView(R.id.LEDModeSpinner) Spinner LEDModeSpinner;
+    @BindView(R.id.pulseWidthSpinner) Spinner pulseWidthSpinner ;
+    @BindView(R.id.brightnessSpinner) Spinner brightnessSpinner ;
+    @BindView(R.id.avgCountSpinner) Spinner avgCountSpinner ;
+
+
     @BindView(R.id.x_axis_textView) TextView xAxisTextView;
     @BindView(R.id.y_axis_textView) TextView yAxisTextView;
-   // @BindView(R.id.z_axis_textView) TextView zAxisTextView;
     @BindView(R.id.connected_device_name_textView) TextView mConnectedDeviceNameTextView;
     @BindView(R.id.connected_device_swVersion_textView) TextView mConnectedDeviceSwVersionTextView;
     @BindView(R.id.linearAcc_lineChart) LineChart mChart;
@@ -111,7 +129,27 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
         final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, spinnerRates);
 
+        final ArrayAdapter<String> ADCRangesAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, ranges);
+
+        final ArrayAdapter<String> LEDModeAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, LEDModes);
+
+        final ArrayAdapter<String> pulseWidthAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, pulseWidths);
+
+        final ArrayAdapter<String> brightnessAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, brightnessLevels);
+
+        final ArrayAdapter<String> avgReadingsAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, avgReadings);
+
+
         spinner.setAdapter(spinnerAdapter);
+        LEDModeSpinner.setAdapter(LEDModeAdapter);
+        pulseWidthSpinner.setAdapter(pulseWidthAdapter);
+        brightnessSpinner.setAdapter(brightnessAdapter);
+        avgCountSpinner.setAdapter(avgReadingsAdapter);
 
         // Display dialog
         alertDialog.show();
@@ -126,11 +164,14 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
                         // Hide dialog
                         alertDialog.dismiss();
 
-                        InfoResponse infoResponse = new Gson().fromJson(data, InfoResponse.class);
+                        InfoResponse.Content POContent = new InfoResponse.Content();
+                        InfoResponse infoResponse = new InfoResponse(POContent);
 
                         if (infoResponse != null) {
 
+
                             for (Integer inforate : infoResponse.content.sampleRates) {
+                                Log.d(LOG_TAG, "Assign sampleRate "+ inforate);
                                 spinnerRates.add(String.valueOf(inforate));
 
                                 // Set first rate as default
@@ -139,7 +180,51 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
                                 }
                             }
 
+
+                            for (String mode : infoResponse.content.LEDMode){
+                                LEDModes.add(String.valueOf(mode));
+
+                                // Set first rate as default
+                                if (LEDMode == null) {
+                                    LEDMode = String.valueOf(mode);
+                                }
+
+                            }
+
+
+                            for (Integer width : infoResponse.content.pulseWidth){
+                                pulseWidths.add(String.valueOf(width));
+
+                                // Set first rate as default
+                                if (pulseWidth == null) {
+                                    pulseWidth = String.valueOf(width);
+                                }
+                            }
+
+                            for (String brightness : infoResponse.content.brightness){
+                                brightnessLevels.add(String.valueOf(brightness));
+
+                                // Set first rate as default
+                                if (brightness == null) {
+                                    brightness = String.valueOf(brightness);
+                                }
+                            }
+
+                            for (Integer avgReading : infoResponse.content.avgReading){
+                                avgReadings.add(String.valueOf(avgReading));
+
+                                // Set first rate as default
+                                if (avgCount == null) {
+                                    avgCount = String.valueOf(avgReading);
+                                }
+                            }
+
+
                             spinnerAdapter.notifyDataSetChanged();
+                            LEDModeAdapter.notifyDataSetChanged();
+                            pulseWidthAdapter.notifyDataSetChanged();
+                            brightnessAdapter.notifyDataSetChanged();
+                            avgReadingsAdapter.notifyDataSetChanged();
                         }
                     }
 
@@ -158,6 +243,8 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
 
     @OnCheckedChanged(R.id.switchSubscription)
     public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+//
+//
 //        if (isChecked) {
 //            disableSpinner();
 //
@@ -239,8 +326,27 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
     }
 
     @OnItemSelected(R.id.spinner)
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelectedRate(AdapterView<?> parent, View view, int position, long id) {
         rate = spinnerRates.get(position);
+    }
+    @OnItemSelected(R.id.LEDModeSpinner)
+    public void onItemSelectedLEDMode(AdapterView<?> parent, View view, int position, long id) {
+       LEDMode = spinnerRates.get(position);
+    }
+
+    @OnItemSelected(R.id.pulseWidthSpinner)
+    public void onItemSelectedPulseWidth(AdapterView<?> parent, View view, int position, long id) {
+        pulseWidth = spinnerRates.get(position);
+    }
+
+    @OnItemSelected(R.id.brightnessSpinner)
+    public void onItemSelectedBrightness(AdapterView<?> parent, View view, int position, long id) {
+        brightness= spinnerRates.get(position);
+    }
+
+    @OnItemSelected(R.id.avgCountSpinner)
+    public void onItemSelectedAvgCount(AdapterView<?> parent, View view, int position, long id) {
+        avgCount = spinnerRates.get(position);
     }
 
     @Override
@@ -271,10 +377,20 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
 
     private void disableSpinner() {
         spinner.setEnabled(false);
+        LEDModeSpinner.setEnabled(false);
+        pulseWidthSpinner.setEnabled(false);
+        brightnessSpinner.setEnabled(false);
+        avgCountSpinner.setEnabled(false);
     }
 
     private void enableSpinner() {
+
         spinner.setEnabled(true);
+        LEDModeSpinner.setEnabled(true);
+        pulseWidthSpinner.setEnabled(true);
+        brightnessSpinner.setEnabled(true);
+        avgCountSpinner.setEnabled(true);
+
     }
 
     @Override
