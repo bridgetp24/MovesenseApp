@@ -10,6 +10,58 @@
     tools:context=".section_01_movesense.device_settings.DeviceSettingsActivity">
 
     <TextView
+        android:id="@+id/AppInfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="App info"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/sensorList_appInfo_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/white"
+        android:text="Name: Unknown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AppInfoText"
+        />
+
+    <TextView
+        android:id="@+id/sensorList_appInfo_version_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/white"
+        android:text="Version: Unknown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sensorList_appInfo_name_tv" />/>
+
+    <TextView
+        android:id="@+id/sensorList_appInfo_company_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/white"
+        android:text="Company: Unknown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sensorList_appInfo_version_tv" />/>
+
+
+    <Button
+        android:layout_marginTop="4dp"
+        android:id="@+id/buttonGet"
+        android:text="Get"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sensorList_appInfo_company_tv" />/>
+
+
+    <TextView
         android:id="@+id/device_settings_uart_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +69,7 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/buttonGet" />
 
     <Button
         android:id="@+id/device_settings_uart_get_btn"
@@ -136,6 +188,9 @@
         app:layout_constraintBottom_toBottomOf="@id/device_settings_powerOffAfterReset_set_btn"
         app:layout_constraintLeft_toRightOf="@id/device_settings_powerOffAfterReset_switch"
         app:layout_constraintTop_toTopOf="@id/device_settings_powerOffAfterReset_set_btn"/>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

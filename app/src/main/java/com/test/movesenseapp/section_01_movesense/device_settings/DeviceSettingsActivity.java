@@ -3,10 +3,12 @@ package com.test.movesenseapp.section_01_movesense.device_settings;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.movesense.mds.Mds;
 import com.movesense.mds.MdsException;
 import com.movesense.mds.MdsResponseListener;
@@ -14,6 +16,7 @@ import com.movesense.mds.internal.connectivity.MovesenseConnectedDevices;
 import com.test.movesenseapp.BaseActivity;
 import com.test.movesenseapp.R;
 import com.test.movesenseapp.bluetooth.MdsRx;
+import com.test.movesenseapp.model.InfoAppResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,12 +36,43 @@ public class DeviceSettingsActivity extends BaseActivity {
     private boolean powerOffSwitchState = true;
 
     @BindView(R.id.device_settings_uart_status_tv) TextView mDeviceSettingsUartStatusTv;
+    @BindView(R.id.sensorList_appInfo_name_tv) TextView mSensorListAppInfoNameTv;
+    @BindView(R.id.sensorList_appInfo_version_tv) TextView mSensorListAppInfoVersionTv;
+    @BindView(R.id.sensorList_appInfo_company_tv) TextView mSensorListAppInfoCompanyTv;
+    @BindView(R.id.buttonGet) Button mButtonGet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_settings);
         ButterKnife.bind(this);
+
+        mSensorListAppInfoNameTv.setText("Name: Loading");
+        mSensorListAppInfoVersionTv.setText("Version: Loading");
+        mSensorListAppInfoCompanyTv.setText("Company: Loading");
+
+        Mds.builder().build(this).get(MdsRx.SCHEME_PREFIX +
+                        MovesenseConnectedDevices.getConnectedDevice(0).getSerial() + "/Info/App",
+                null, new MdsResponseListener() {
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.d(TAG, "/Info/App onSuccess: " + s);
+                        InfoAppResponse infoAppResponse = new Gson().fromJson(s, InfoAppResponse.class);
+
+                        if (infoAppResponse.getContent() != null) {
+                            mSensorListAppInfoNameTv.setText("Name: " + infoAppResponse.getContent().getName());
+                            mSensorListAppInfoVersionTv.setText("Version: " + infoAppResponse.getContent().getVersion());
+                            mSensorListAppInfoCompanyTv.setText("Company: " + infoAppResponse.getContent().getCompany());
+                        }
+                    }
+
+                    @Override
+                    public void onError(MdsException e) {
+                        Log.e(TAG, "Info onError: ", e);
+
+                    }
+                });
     }
 
     @OnClick({R.id.device_settings_uart_get_btn, R.id.device_settings_uart_set_btn, R.id.device_settings_powerOffAfterReset_set_btn})
@@ -109,5 +143,35 @@ public class DeviceSettingsActivity extends BaseActivity {
     @OnCheckedChanged(R.id.device_settings_powerOffAfterReset_switch)
     public void onPowerOffCheckedChange(CompoundButton compoundButton, boolean isChecked) {
         powerOffSwitchState = !isChecked;
+    }
+    @OnClick(R.id.buttonGet)
+    public void onViewClicked() {
+
+        mSensorListAppInfoNameTv.setText("Name: Loading");
+        mSensorListAppInfoVersionTv.setText("Version: Loading");
+        mSensorListAppInfoCompanyTv.setText("Company: Loading");
+
+        Mds.builder().build(this).get(MdsRx.SCHEME_PREFIX +
+                        MovesenseConnectedDevices.getConnectedDevice(0).getSerial() + "/Info/App",
+                null, new MdsResponseListener() {
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.d(TAG, "/Info/App onSuccess: " + s);
+                        InfoAppResponse infoAppResponse = new Gson().fromJson(s, InfoAppResponse.class);
+
+                        if (infoAppResponse.getContent() != null) {
+                            mSensorListAppInfoNameTv.setText("Name: " + infoAppResponse.getContent().getName());
+                            mSensorListAppInfoVersionTv.setText("Version: " + infoAppResponse.getContent().getVersion());
+                            mSensorListAppInfoCompanyTv.setText("Company: " + infoAppResponse.getContent().getCompany());
+                        }
+                    }
+
+                    @Override
+                    public void onError(MdsException e) {
+                        Log.e(TAG, "Info onError: ", e);
+
+                    }
+                });
     }
 }

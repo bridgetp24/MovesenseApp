@@ -48,7 +48,7 @@
     <string name="change_account">Change Account</string>
     <string name="log_in">Log In</string>
 
-    <string name="Movesense">Movesense</string>
+    <string name="Movesense">SMRL Sensor</string>
     <string name="Saved_Data">Saved Data</string>
     <string name="movesense_device_name">Movesense</string>
     <string name="dfu_device_name">DfuTarg</string>
@@ -61,11 +61,11 @@
     <string name="library_version">Library Version: %s</string>
     <string name="energy_value_to_low_for_update">Energy value is to low for update</string>
     <string name="ecg">ECG</string>
-    <string name="battery_energy">Battery / Energy</string>
+    <string name="battery_energy">Battery</string>
     <string name="battery_value">Battery value : </string>
     <string name="note_text">Important Note:\n  On some phones Subscripton with rate higher than 104 Hz can cause Bluetooth connection problem and restart app might be required.</string>
     <string name="multisubscribe_note_text">Important Note:\n  On some phones Subscribing 3(and more) sensors can cause Bluetooth connection problem and restart app might be required.</string>
-    <string name="app_info_name">App Info</string>
+    <string name="settings_name">Settings</string>
     <string name="exit">Exit</string>
     <string name="imu_name">Imu</string>
     <string name="Memory_Diagnostic">Memory Diagnostic</string>
@@ -78,4 +78,6 @@
     <string name="beat_interval">Beat interval:</string>
     <string name="pulse_oximeter">Pulse Oximeter</string>
     <string name="pulseOximeterInstruct">Subscribe to Pulse Oximeter data here. This sensor is not yet implemented.</string>
+    <string name = "connectionInstruction">Scanning for bluetooth devices. Select a device below to connect.</string>
+    <string name="bluetooth_connect">Bluetooth Connect</string>
 </resources>

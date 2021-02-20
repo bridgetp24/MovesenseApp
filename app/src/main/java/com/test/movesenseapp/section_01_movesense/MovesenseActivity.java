@@ -53,7 +53,7 @@ import io.reactivex.functions.Consumer;
 public class MovesenseActivity extends AppCompatActivity implements MovesenseContract.View, View.OnClickListener {
 
     @BindView(R.id.movesense_recyclerView) RecyclerView mMovesenseRecyclerView;
-    @BindView(R.id.movesense_infoTv) TextView mMovesenseInfoTv;
+    @BindView(R.id.movesense_infoTv) TextView connectionInstructions;
     @BindView(R.id.movesense_progressBar) ProgressBar mMovesenseProgressBar;
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 98;
@@ -74,8 +74,10 @@ public class MovesenseActivity extends AppCompatActivity implements MovesenseCon
         ButterKnife.bind(this);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Movesense Connection");
+            getSupportActionBar().setTitle("Bluetooth Connection");
         }
+
+     //   connectionInstructions.setText("@string/connectionInstruction");
 
         scanningSubscriptions = new CompositeDisposable();
         connectedDevicesSubscriptions = new CompositeDisposable();

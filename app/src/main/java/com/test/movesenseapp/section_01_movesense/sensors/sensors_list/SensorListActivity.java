@@ -33,7 +33,6 @@ import com.test.movesenseapp.section_01_movesense.device_settings.DeviceSettings
 //import com.test.movesenseapp.section_01_movesense.tests.MemoryDiagnosticActivity;
 //import com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity;
 //import com.test.movesenseapp.section_01_movesense.tests.TemperatureTestActivity;
-import com.test.movesenseapp.section_01_movesense.tests.AppInfoActivity;
 import com.test.movesenseapp.section_01_movesense.tests.BatteryActivity;
 import com.test.movesenseapp.section_01_movesense.tests.EcgActivityGraphView;
 import com.test.movesenseapp.section_01_movesense.tests.LinearAccelerationTestActivity;
@@ -73,11 +72,11 @@ public class SensorListActivity extends BaseActivity implements View.OnClickList
 
         ArrayList<SensorListItemModel> sensorListItemModels = new ArrayList<>();
 
-        sensorListItemModels.add(new SensorListItemModel(getString(R.string.app_info_name)));
-        sensorListItemModels.add(new SensorListItemModel(getString(R.string.multi_subscription_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.linear_acceleration_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.ecg)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.pulse_oximeter)));
+        sensorListItemModels.add(new SensorListItemModel(getString(R.string.multi_subscription_name)));
+        sensorListItemModels.add(new SensorListItemModel(getString(R.string.settings_name)));
         sensorListItemModels.add(new SensorListItemModel(getString(R.string.battery_energy)));
 
 
@@ -155,35 +154,18 @@ public class SensorListActivity extends BaseActivity implements View.OnClickList
         } else if (getString(R.string.linear_acceleration_name).equals(sensorName)) {
            startActivity(new Intent(SensorListActivity.this, LinearAccelerationTestActivity.class));
             return;
-        } else if (getString(R.string.temperature_name).equals(sensorName)) {
-          //  startActivity(new Intent(SensorListActivity.this, TemperatureTestActivity.class));
-            return;
-        } else if (getString(R.string.angular_velocity_name).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, AngularVelocityActivity.class));
-            return;
-        } else if (getString(R.string.magnetic_field_name).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, MagneticFieldTestActivity.class));
-            return;
-        } else if (getString(R.string.heart_rate_name).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, HeartRateTestActivity.class));
-            return;
         } else if (getString(R.string.multi_subscription_name).equals(sensorName)) {
             startActivity(new Intent(SensorListActivity.this, MultiSubscribeActivity.class));
             return;
         } else if (getString(R.string.ecg).equals(sensorName)) {
-          //  startActivity(new Intent(SensorListActivity.this, EcgActivity.class));
             startActivity(new Intent(SensorListActivity.this, EcgActivityGraphView.class));
             return;
         } else if (getString(R.string.battery_energy).equals(sensorName)) {
             startActivity(new Intent(SensorListActivity.this, BatteryActivity.class));
             return;
-        } else if (getString(R.string.app_info_name).equals(sensorName)) {
-            startActivity(new Intent(SensorListActivity.this, AppInfoActivity.class));
+        } else if (getString(R.string.settings_name).equals(sensorName)) {
+            startActivity(new Intent(SensorListActivity.this, DeviceSettingsActivity.class));
             return;
-        } else if (getString(R.string.imu_name).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, ImuActivity.class));
-        } else if (getString(R.string.Memory_Diagnostic).equals(sensorName)) {
-           // startActivity(new Intent(SensorListActivity.this, MemoryDiagnosticActivity.class));
         }
     }
 

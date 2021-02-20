@@ -80,10 +80,8 @@
             android:name=".section_01_movesense.tests.BatteryActivity"
             android:screenOrientation="portrait"/>
 
-        <activity
-            android:name=".section_01_movesense.tests.AppInfoActivity"
-            android:screenOrientation="portrait">
-        </activity>
+
+
         <activity
             android:name=".section_01_movesense.tests.PulseOximeterActivity"
             android:screenOrientation="portrait">

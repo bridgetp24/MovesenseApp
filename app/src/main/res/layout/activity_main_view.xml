@@ -52,7 +52,7 @@
                     android:background="#3d545252"
                     android:gravity="center"
                     android:padding="6dp"
-                    android:text="Movesense"
+                    android:text="@string/bluetooth_connect"
                     android:textColor="@color/colorText"
                     android:textSize="16sp" />
 

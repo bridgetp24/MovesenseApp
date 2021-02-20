@@ -19,8 +19,8 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:text="Connected Device"
-            android:textColor="@color/tangerine"
-            android:textSize="16sp"/>
+            android:textColor="@color/colorRed"
+            android:textSize="20dp"/>
 
         <TextView
             android:id="@+id/sensorList_deviceInfo_serial_tv"
