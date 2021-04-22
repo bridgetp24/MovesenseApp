@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Movesense App</string>
+    <string name="app_name">Smart-Bandage App</string>
 
     <string name="title_location_permission">Location permission</string>
     <string name="text_location_permission">Bluetooth LE scanning requires location permission</string>
@@ -80,4 +80,6 @@
     <string name="pulseOximeterInstruct">Subscribe to Pulse Oximeter data here. This sensor is not yet implemented.</string>
     <string name = "connectionInstruction">Scanning for bluetooth devices. Select a device below to connect.</string>
     <string name="bluetooth_connect">Bluetooth Connect</string>
+    <string name = "account_type">"com.test.movesenseapp.account"</string>
+    <string name = "authority">"syncAdapter.provider"</string>
 </resources>

@@ -12,10 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.test.movesenseapp.BuildConfig;
 import com.test.movesenseapp.R;
+import com.test.movesenseapp.data_manager.DataManagerActivity;
 import com.test.movesenseapp.section_01_movesense.MovesenseActivity;
-import com.test.movesenseapp.google_drive.SendLogsToGoogleDriveActivity;
-import com.test.movesenseapp.section_01_movesense.tests.MultiSubscribeActivity;
 import com.test.movesenseapp.section_02_multi_connection.connection.MultiConnectionActivity;
+import com.test.movesenseapp.data_manager.syncAdapter.SyncUtils;
+
 //import com.test.showcaserebuild.section_02_multi_connection.connection.MultiConnectionActivity;
 
 
@@ -43,7 +44,6 @@ public class MainViewActivity extends AppCompatActivity {
 
        String versionName = BuildConfig.VERSION_NAME;
         //hardcoded because access through BuildConfig gave error
-
         String libraryVersion = "1.44.0";
 
         mMainViewAppVersionTv.setText(getString(R.string.application_version, versionName));
@@ -51,7 +51,14 @@ public class MainViewActivity extends AppCompatActivity {
         // mMainViewLibraryVersionTv.setText(getString(R.string.library_version, libraryVersion));
         mMainViewLibraryVersionTv.setText(getString(R.string.library_version, libraryVersion));
 
+        Log.d("SyncDebug", "Create sync account");
+
+        //create sync account
+        SyncUtils.createSyncAccount(this);
+
+
     }
+
 
     @OnClick({R.id.mainView_movesense_Ll, R.id.mainView_multiConnection_Ll, R.id.mainView_savedData_Ll})
     public void onViewClicked(View view) {
@@ -67,9 +74,11 @@ public class MainViewActivity extends AppCompatActivity {
                 break;
 
             case R.id.mainView_savedData_Ll:
-                Log.d(TAG, "Starting google drive intent");
-                startActivity(new Intent(com.test.movesenseapp.section_00_mainView.MainViewActivity.this, SendLogsToGoogleDriveActivity.class));
+                Log.d(TAG, "Starting data manager intent");
+                startActivity(new Intent(com.test.movesenseapp.section_00_mainView.MainViewActivity.this, DataManagerActivity.class));
                 break;
+
         }
     }
+
 }

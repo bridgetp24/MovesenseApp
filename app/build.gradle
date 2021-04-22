@@ -3,6 +3,7 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+
 android {
     // 1. USER EXAMPLE How to add debug.keystore in gradle
     // Default debug.keystore settings
@@ -48,6 +49,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+ 
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
     androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -123,7 +126,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.google.code.findbugs'
     }
-    // Google Drive Api
+ //    Google Drive Api
     implementation('com.google.api-client:google-api-client-android:1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
@@ -134,13 +137,20 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'pub.devrel:easypermissions:0.2.1'
 
-    implementation platform('com.google.firebase:firebase-bom:26.2.0')
-    implementation 'com.google.firebase:firebase-analytics'
-
 
     //added in off
     // The standard application plugin creates your app's base module.
     apply plugin: 'com.android.application'
 
+    implementation "androidx.core:core-ktx:+"
+
+    //firebase
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:27.0.0')
+
+    // Declare the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-analytics'
 
 }

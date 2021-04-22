@@ -182,6 +182,11 @@
         android:textColor="@color/colorText"
         android:textSize="19dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />/>
+        app:layout_constraintTop_toTopOf="parent" />
 
+<![CDATA[
+
+    />
+
+]]>
 </androidx.constraintlayout.widget.ConstraintLayout>
