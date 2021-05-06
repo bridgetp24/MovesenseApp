@@ -6,6 +6,7 @@ import android.util.Log;
 import com.test.movesenseapp.bluetooth.BluetoothStatusMonitor;
 import com.test.movesenseapp.bluetooth.MdsRx;
 import com.test.movesenseapp.bluetooth.RxBle;
+import com.test.movesenseapp.data_manager.User;
 import com.test.movesenseapp.utils.Util;
 
 import java.io.FileOutputStream;
@@ -17,6 +18,12 @@ import java.io.InputStream;
  */
 public class SampleApp extends Application {
 
+
+
+    /**
+     * User field that stores instance of firebase app as user id
+     */
+    private static User user;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -32,6 +39,10 @@ public class SampleApp extends Application {
         MdsRx.Instance.initialize(this);
 
         BluetoothStatusMonitor.INSTANCE.initBluetoothStatus();
+        if (user == null) {
+            user = new User();
+
+        }
 
 
     }
@@ -67,5 +78,13 @@ public class SampleApp extends Application {
             Util.safeClose(out);
             Util.safeClose(in);
         }
+    }
+
+    public static User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

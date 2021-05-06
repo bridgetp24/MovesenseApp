@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.test.movesenseapp.SampleApp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,14 +61,19 @@ public class StorageUploader extends AppCompatActivity {
     }
 
     public void uploadFileFirebase(File f) {
+        String currentISO8601Timestamp = String.format("%tFT%<tTZ.%<tL",
+                Calendar.getInstance(TimeZone.getTimeZone("Z")));
+
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
+
+
         if(user != null) {
-            uploadFile(f);
+            uploadFile(f, currentISO8601Timestamp);
         }else {
             signInAnonymously();
-            uploadFile(f);
+            uploadFile(f, currentISO8601Timestamp);
             Log.d(LOG_TAG, "FILE UPLOAD COMPLETE");
         }
 
@@ -82,39 +88,21 @@ public class StorageUploader extends AppCompatActivity {
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference().child("SmartBandageFiles/");
 
-        for(File f : logsFileList) {
-            Uri file = Uri.fromFile(f);
-            StorageReference smartBandageRef = storageRef.child(currentISO8601Timestamp+ "/" +  f.getName() + "/");
-
-            UploadTask uploadTask =smartBandageRef.putFile(file);
-
-            // Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.d(LOG_TAG, "FILE UPLOADED SUCCESSFULLY");
-                }
-            });
+        for (File f : logsFileList) {
+            uploadFile(f, currentISO8601Timestamp);
         }
-
     }
 
-    public void uploadFile(File f) {
+
+    public void uploadFile(File f, String currentISO8601Timestamp) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        String currentISO8601Timestamp = String.format("%tFT%<tTZ.%<tL",
-                Calendar.getInstance(TimeZone.getTimeZone("Z")));
 
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference().child("SmartBandageFiles/");
 
 
             Uri file = Uri.fromFile(f);
-            StorageReference smartBandageRef = storageRef.child(currentISO8601Timestamp+ "/" +  f.getName() + "/");
+            StorageReference smartBandageRef = storageRef.child( currentISO8601Timestamp + "/"  + f.getName() + "/" );
 
             UploadTask uploadTask =smartBandageRef.putFile(file);
 
@@ -128,6 +116,7 @@ public class StorageUploader extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d(LOG_TAG, "FILE UPLOADED SUCCESSFULLY");
+
                 }
             });
 

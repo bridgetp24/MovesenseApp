@@ -14,8 +14,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.movesense.mds.internal.connectivity.MovesenseConnectedDevices;
 import com.test.movesenseapp.R;
+import com.test.movesenseapp.SampleApp;
+import com.test.movesenseapp.data_manager.StorageUploader;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -52,13 +55,21 @@ public class CsvLogger {
 
     public void finishSavingLogs(Context context, String sensorName) {
         try {
+            //create file
             File file = createLogFile(sensorName);
+
+            //add contents to file
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(mStringBuilder.toString());
             fileWriter.close();
 
-            MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
-        } catch (IOException e) {
+            //upload file
+            StorageUploader uploader = new StorageUploader();
+            uploader.uploadFileFirebase(file);
+
+           // MediaScannerConnection.scanFile(context, new String[]{file.getPath()}, null, null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -66,7 +77,7 @@ public class CsvLogger {
     public File createLogFile(String sensorName) {
         if (isExternalStorageWritable()) {
             File externalDirectory = Environment.getExternalStorageDirectory();
-            File appDirectory = new File(externalDirectory, "Movesense");
+            File appDirectory = new File(externalDirectory, "SMRL");
             File logFile = new File(appDirectory, createFileNameIso8601(sensorName) + ".csv");
 
             // create app folder
@@ -111,7 +122,7 @@ public class CsvLogger {
 
         sb.append(currentISO8601Timestamp).append("_").
                 append(deviceName).append("_")
-                .append(tag);
+                .append(tag).append("_").append(SampleApp.getUser().getId());
 
         return sb.toString();
     }

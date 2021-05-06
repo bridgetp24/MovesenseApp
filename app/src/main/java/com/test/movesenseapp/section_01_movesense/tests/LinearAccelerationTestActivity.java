@@ -267,7 +267,7 @@ public class LinearAccelerationTestActivity extends BaseActivity implements BleM
         }
 
         if (!isLogSaved) {
-            mCsvLogger.finishSavingLogs(this, LOG_TAG);
+            mCsvLogger.finishSavingLogs(this, "LinearAcceleration");
             isLogSaved = true;
         }
     }

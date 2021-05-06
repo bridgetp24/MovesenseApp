@@ -370,7 +370,7 @@ public class PulseOximeterActivity extends BaseActivity implements BleManager.IB
         }
 
         if (!isLogSaved) {
-            mCsvLogger.finishSavingLogs(this, LOG_TAG);
+            mCsvLogger.finishSavingLogs(this, "PulseOximeter");
             isLogSaved = true;
         }
     }

@@ -119,7 +119,7 @@ public class MultiSubscribeActivity extends BaseActivity implements BleManager.I
 
         BleManager.INSTANCE.removeBleConnectionMonitorListener(this);
 
-        mCsvLogger.finishSavingLogs(this, LOG_TAG);
+        mCsvLogger.finishSavingLogs(this, "MultiSubscribe");
 
         unsubscribe();
     }

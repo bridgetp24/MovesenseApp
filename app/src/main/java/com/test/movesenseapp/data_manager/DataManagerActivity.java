@@ -99,18 +99,23 @@ public class DataManagerActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.UploadData:
                 Log.d(LOG_TAG, "upload data");
-                SyncUtils.forceRefreshAll(com.test.movesenseapp.data_manager.DataManagerActivity.this);
+                uploadFilesFirebase();
                 Toast.makeText(com.test.movesenseapp.data_manager.DataManagerActivity.this, "Files Uploading to Cloud", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
-    public void uploadFileFirebase(File fileToSend) {
+    public void uploadFilesFirebase() {
         //update from Storage Uploader activity with mAuth used
         StorageUploader uploader = new StorageUploader();
-        uploader.uploadFileFirebase(fileToSend);
+        uploader.uploadFilesFirebase();
     }
 
+    public void uploadFileFirebase(File file) {
+        //update from Storage Uploader activity with mAuth used
+        StorageUploader uploader = new StorageUploader();
+        uploader.uploadFileFirebase(file);
+    }
 
     @OnItemClick({R.id.logsFileListView})
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

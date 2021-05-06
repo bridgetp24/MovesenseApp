@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.test.movesenseapp.bluetooth.BluetoothStatusMonitor;
 import com.test.movesenseapp.bluetooth.RxBle;
+import com.test.movesenseapp.data_manager.User;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 public class BaseActivity extends AppCompatActivity {
 
     private final String TAG = com.test.movesenseapp.BaseActivity.class.getSimpleName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,5 +42,7 @@ public class BaseActivity extends AppCompatActivity {
                         Log.d(TAG, "call: BluetoothAdapter.STATE_OFF");
                     }
                 }, throwable -> Log.e(TAG, "call bluetoothStatusSubject: ", throwable));
+
+
     }
 }

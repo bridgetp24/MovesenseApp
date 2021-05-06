@@ -331,7 +331,7 @@ public class EcgActivityGraphView extends BaseActivity implements BleManager.IBl
             mdsSubscriptionEcg = null;
         }
 
-        mCsvLogger.finishSavingLogs(this, TAG);
+        mCsvLogger.finishSavingLogs(this, "ECG");
     }
 
     @Override
